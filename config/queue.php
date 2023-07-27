@@ -85,7 +85,7 @@ return [
     */
 
     'batching' => [
-        'database' => env('DB_CONNECTION', 'mysql'),
+        'database' => env('QUEUE_CONNECTION', 'mysql'),
         'table' => 'job_batches',
     ],
 
