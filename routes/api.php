@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Row\RowController;
 use App\Http\Controllers\Api\Upload\XlsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,23 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class,'authenticate']);
 Route::post('/register', [AuthController::class,'register']);
+Route::get('/broadcast', function () {
+    event(new \App\Events\RowEvent('$filename', '$progress'));
+
+});
+
+Route::group(['prefix' => 'redis'], function () {
+    Route::get('/progress', function (Request $request){
+        $redis = new Redis();
+        $redis->connect('redis');
+        return $redis->hGetAll($request->key);
+    });
+    Route::get('/keys', function (Request $request){
+        $redis = new Redis();
+        $redis->connect('redis');
+        return $redis->keys('*');
+    });
+});
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
 
@@ -37,6 +55,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     Route::group(['prefix' => 'rows'], function () {
         Route::get('/', [RowController::class,'show']);
+        Route::delete('/clean', [RowController::class,'clean']);
     });
 
     Route::delete('/logout', [AuthController::class,'logout']);

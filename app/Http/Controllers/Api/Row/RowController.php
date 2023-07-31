@@ -12,4 +12,9 @@ class RowController extends Controller
     {
         return Row::query()->get()->groupBy('date');
     }
+
+    public function clean()
+    {
+        return Row::query()->delete();
+    }
 }

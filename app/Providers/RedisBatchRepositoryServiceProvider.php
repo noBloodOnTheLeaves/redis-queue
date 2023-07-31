@@ -31,12 +31,4 @@ class RedisBatchRepositoryServiceProvider extends ServiceProvider
             BatchRepository::class,
         ];
     }
-
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
-    {
-        //
-    }
 }
